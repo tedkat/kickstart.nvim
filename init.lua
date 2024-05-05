@@ -565,6 +565,10 @@ require('lazy').setup({
       --  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
+      local zigZLSPath = '~/bin/zls/zig-out/bin/zls'
+      if vim.fn.has 'win32' == 1 then
+        zigZLSPath = 'C:\\Utils\\zls\\zig-out\\bin\\zls.exe'
+      end
       local servers = {
         -- clangd = {},
         -- gopls = {},
@@ -577,7 +581,9 @@ require('lazy').setup({
         --
         -- But for many setups, the LSP (`tsserver`) will work just fine
         tsserver = {},
-        --
+        zls = {
+          cmd = { zigZLSPath },
+        },
         angularls = {},
         omnisharp = {
           handlers = {
@@ -673,6 +679,7 @@ require('lazy').setup({
       end,
       formatters_by_ft = {
         lua = { 'stylua' },
+        zig = { 'zig fmg' },
         cs = { 'csharpier' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
@@ -799,7 +806,7 @@ require('lazy').setup({
         },
         window = {
           completion = { border = 'rounded' },
-          documention = { border = 'rounded' },
+          documentation = { border = 'rounded' },
         },
       }
     end,
@@ -861,7 +868,7 @@ require('lazy').setup({
 
       -- ... and there is more!
       --  Check out: https://github.com/echasnovski/mini.nvim
-      require('mini.pairs').setup();
+      require('mini.pairs').setup()
     end,
   },
   { -- Highlight, edit, and navigate code
