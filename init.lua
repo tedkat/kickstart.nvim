@@ -98,11 +98,9 @@ vim.g.have_nerd_font = true
 -- NOTE: You can change these options as you wish!
 --  For more options, you can see `:help option-list`
 
-
 if vim.fn.has 'win32' == 1 then
-    vim.opt.shellcmdflag = '-c'
+  vim.opt.shellcmdflag = '-c'
 end
-
 
 -- Make line numbers default
 vim.opt.number = true
@@ -909,7 +907,6 @@ require('lazy').setup({
       --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
     end,
   },
-
   -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
   -- place them in the correct locations.
