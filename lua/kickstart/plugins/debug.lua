@@ -93,5 +93,53 @@ return {
         detached = vim.fn.has 'win32' == 0,
       },
     }
+
+    dap.adapters.lldb = {
+      type = 'executable',
+      command = 'lldb-vscode', -- adjust as needed, must be absolute path
+      name = 'lldb',
+    }
+
+    dap.configurations.zig = {
+      {
+        name = 'Launch',
+        type = 'lldb',
+        request = 'launch',
+        --program = '${workspaceFolder}/zig-out/bin/zig_hello_world.exe',
+        program = function()
+          vim.cmd 'make'
+          local command = 'fd . -t x zig-out/bin/'
+          local bin_location = io.popen(command, 'r')
+
+          if bin_location ~= nil then
+            return vim.fn.getcwd() .. '/' .. bin_location:read('*a'):gsub('[\n\r]', '')
+          else
+            return vim.fn.input {
+              prompt = 'Path to executable: ',
+              defaut = vim.fn.getcwd() .. '/',
+              completion = 'file',
+            }
+          end
+        end,
+        args = function()
+          if vim.g.zig_dap_argv ~= nil then
+            return vim.g.zig_dap_argv
+          end
+
+          local argv = {}
+          local arg = vim.fn.input(string.format 'Arguments: ')
+
+          for a in string.gmatch(arg, '%S+') do
+            table.insert(argv, a)
+          end
+
+          vim.g.zig_dap_argv = argv
+
+          return argv
+        end,
+        cwd = '${workspaceFolder}',
+        stopOnEntry = false,
+      },
+    }
   end,
 }
