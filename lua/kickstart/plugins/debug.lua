@@ -141,5 +141,32 @@ return {
         stopOnEntry = false,
       },
     }
+    dap.adapters.coreclr = {
+      type = 'executable',
+      command = 'netcoredbg',
+      args = { '--interpreter=vscode' },
+    }
+    dap.configurations.cs = {
+      {
+        type = 'coreclr',
+        name = 'launch - netcoredbg',
+        request = 'launch',
+        env = 'ASPNETCORE_ENVIRONMENT=Development',
+        args = {
+          '/p:EnvironmentName=Development', -- this is a msbuild jk
+          --  this is set via environment variable ASPNETCORE_ENVIRONMENT=Development
+          '--urls=http://localhost:5002',
+          '--environment=Development',
+        },
+        program = function()
+          local dir = vim.loop.cwd() .. '/' .. vim.fn.glob 'bin/Debug/net*/'
+          local name = dir .. vim.fn.glob('*.csproj'):gsub('%.csproj$', '.dll')
+          if name == nil or name == '' then
+            os.execute 'dotnet build '
+          end
+          return name
+        end,
+      },
+    }
   end,
 }
